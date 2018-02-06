@@ -30,3 +30,17 @@ function getArticlesForTopic(req, res) {
       })
       .catch(console.error)
 }
+
+function addArticleForTopic(req, res) {
+  const newArticle = new Articles({
+      title: req.body.title,
+      body: req.body.body,
+      created_by: req.body.by,
+      belongs_to: req.params.topic_id
+  })
+  newArticle.save()
+      .then((newArticle) => {
+          res.status(201).json(newArticle)
+      })
+      .catch(console.error);
+}
