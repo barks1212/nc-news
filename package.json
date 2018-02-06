@@ -1,0 +1,40 @@
+{
+  "name": "nc-news",
+  "version": "1.0.0",
+  "description": "A reddit-like news site for Northcoders",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":  "node listen.js",
+    "dev": "NODE_ENV=development nodemon listen.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barks1212/nc-news.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/barks1212/nc-news/issues"
+  },
+  "homepage": "https://github.com/barks1212/nc-news#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.0.0",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.14.12"
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "body-parser": "^1.18.2",
+    "chance": "^1.0.13",
+    "dotenv": "^5.0.0",
+    "express": "^4.16.2",
+    "log4js": "^2.5.2",
+    "moment": "^2.20.1",
+    "mongoose": "^5.0.3",
+    "supertest": "^3.0.0",
+    "underscore": "^1.8.3"
+  }
+}
