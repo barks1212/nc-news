@@ -12,3 +12,19 @@ function getAllComments(req, res) {
     })
     .catch(console.error)
 }
+
+function updateCommentVote(req, res) {
+  Comments.findOne({ _id: req.params.comment_id })
+    .then((comment) => {
+      const { vote } = req.query;
+      let currentVotes = comment.votes;
+
+      if (vote === 'up')++currentVotes
+      else if (vote === 'down')--currentVotes
+      return Promise.all([Comments.findOneAndUpdate({ _id: comment._id }, { $set: { votes: currentVotes } })])
+    })
+    .then((updateComment) => {
+      res.status(202).json(updateComment);
+    })
+    .catch(console.error)
+}
