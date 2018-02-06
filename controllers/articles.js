@@ -34,3 +34,15 @@ function getCommentsForArticle(req, res) {
     })
     .catch(console.error)
 }
+
+function addCommentsForArticle(req, res) {
+  const newComment = new Comments({
+    body: req.body.comment,
+    belongs_to: req.params.article_id
+  })
+  return newComment.save()
+    .then(newComment => {
+    res.status(201).json(newComment);
+  })
+    .catch(console.error)
+}
