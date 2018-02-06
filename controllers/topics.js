@@ -44,3 +44,9 @@ function addArticleForTopic(req, res) {
       })
       .catch(console.error);
 }
+
+module.exports = {
+  getAllTopics,
+  getArticlesForTopic,
+  addArticleForTopic
+};
