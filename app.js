@@ -8,7 +8,14 @@ const router = require('./routes/api')
 mongoose.Promise = Promise;
 const app = express();
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({path: `.env.${process.env.NODE_ENV}`})
+}
+
 const {DB_URI, NODE_ENV} = process.env;
+
+console.log('app', DB_URI)
+
 mongoose.connect(DB_URI)
 .then(() => console.log('successfully connected to', NODE_ENV))
 .catch(err => console.log('connection failed', err));

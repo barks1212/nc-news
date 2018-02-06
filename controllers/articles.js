@@ -3,21 +3,22 @@ mongoose.Promise = Promise;
 const { Articles, Comments } = require('../models/models');
 
 function getArticles(req, res) {
+
   const query = !req.params.article_id ? {} : { _id: req.params.article_id };
   Articles.find(query).lean()
     .then(allArticles => {
-      const commentCount = allArticles.map((article) => {
-        return Comments.find({
+      const commentsCountPromises = allArticles.map((article) => {
+        return Comments.count({
           belongs_to: article._id
-        }).count();
+        });
       });
-      return Promise.all([allArticles, Promise.all(commentCount)])
+      return Promise.all([allArticles, ...commentsCountPromises])
     })
-    .then(([allArticles, comments]) => {
-      allArticles.forEach((article, i) => {
-        article.comments = comments[i];
+    .then(([articles, ...commentsCounts]) => {
+      articles.forEach((article, i) => {
+        article.comments = commentsCounts[i];
       });
-      res.status(200).json(allArticles);
+      res.status(200).json({articles});
     })
     .catch(console.error)
 }
@@ -42,8 +43,8 @@ function addCommentsForArticle(req, res) {
   })
   return newComment.save()
     .then(newComment => {
-    res.status(201).json(newComment);
-  })
+      res.status(201).json(newComment);
+    })
     .catch(console.error)
 }
 

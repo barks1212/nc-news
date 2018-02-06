@@ -2,9 +2,9 @@
   "name": "nc-news",
   "version": "1.0.0",
   "description": "A reddit-like news site for Northcoders",
-  "main": "index.js",
+  "main": "config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test mocha spec",
     "start":  "node listen.js",
     "dev": "NODE_ENV=development nodemon listen.js"
   },
