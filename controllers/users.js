@@ -27,3 +27,29 @@ function getSingleUser(req, res) {
     })
     .catch(console.error);
 }
+
+function getAllArticlesByUser(req, res) {
+  Articles.find({
+    created_by: req.params.username
+  })
+    .then((userArticles) => {
+      res.status(200).json(userArticles);
+      mongoose.disconnect();
+    })
+    .catch(console.error);
+}
+
+function getAllCommentsByUser(req, res) {
+  Comments.find({ created_by: req.params.username })
+    .then((userComments) => {
+      res.status(200).json(userComments);
+    })
+    .catch(console.error);
+}
+
+module.exports = {
+  getSingleUser,
+  getUsers,
+  getAllArticlesByUser,
+  getAllCommentsByUser
+};
