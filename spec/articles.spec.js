@@ -30,7 +30,7 @@ const request = require('supertest')(app);
           expect(res.body[0].belongs_to._id).to.equal("5a3d30a7e84d40061379c5b4")
         })
     })
-    it(`update article's vote  200 status`, () => {
+    it(`update article's vote  202 status`, () => {
       let votes;
       request
       .get('/api/articles/5a3d30a7e84d40061379c5b4')
