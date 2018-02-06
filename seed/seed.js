@@ -165,7 +165,7 @@ function addComments(docIds, done) {
     if (err) return done(err);
     return done()
   });
-}
+} 
 
 function getRandomStamp() {
   return new Date (
