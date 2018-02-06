@@ -4,7 +4,7 @@ const express = require('express');
 const morgan = require('morgan')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// const router = require('./routes/api')
+const router = require('./routes/api')
 mongoose.Promise = Promise;
 const app = express();
 
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
   res.send('All good');
 });
 
-// app.use('/api', router)
+app.use('/api', router)
 
 app.use((err, req, res, next) => {
   res.status(500).json(err);
