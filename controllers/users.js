@@ -17,3 +17,13 @@ function getUsers(req, res) {
     })
     .catch(console.error);
 }
+
+function getSingleUser(req, res) {
+  Users.findOne({
+    username: req.params.username
+  })
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch(console.error);
+}
