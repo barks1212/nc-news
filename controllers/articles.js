@@ -69,3 +69,18 @@ function updateArticleVote(req, res) {
     })
     .catch(console.error);
 }
+
+function deleteArticle(req, res) {
+  Articles.findOneAndRemove({ _id: req.params.article_id })
+    .then(() => {
+      res.status(202).json('Article deleted');
+    })
+    .catch(console.error);
+}
+module.exports = {
+  getArticles,
+  getCommentsForArticle,
+  addCommentsForArticle,
+  updateArticleVote,
+  deleteArticle
+};
