@@ -28,3 +28,13 @@ function updateCommentVote(req, res) {
     })
     .catch(console.error)
 }
+
+function deleteComment(req, res) {
+  Comments.findOneAndRemove({ _id: req.params.comment_id })
+    .then(() => {
+      res.status(202).json('Comment deleted');
+    })
+    .catch(console.error)
+}
+
+module.exports = { updateCommentVote, deleteComment, getAllComments };
