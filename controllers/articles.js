@@ -46,3 +46,26 @@ function addCommentsForArticle(req, res) {
   })
     .catch(console.error)
 }
+
+function updateArticleVote(req, res) {
+  Articles.findOne({
+    _id: req.params.article_id
+  })
+    .then(article => {
+      const { vote } = req.query;
+      let currentVotes = article.votes;
+      if (vote === 'up')++currentVotes
+      else if (vote === 'down')--currentVotes
+      return Promise.all([Articles.findOneAndUpdate({
+        _id: article._id
+      }, {
+          $set: {
+            votes: currentVotes
+          }
+        })])
+    })
+    .then(updatedArticle => {
+      res.status(202).json(updatedArticle[0]);
+    })
+    .catch(console.error);
+}
