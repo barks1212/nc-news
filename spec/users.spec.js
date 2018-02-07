@@ -53,11 +53,21 @@ describe('api/topics', function () {
         .get('/api/users/tickle122/comments')
         .expect(200)
         .then(res => {
-          console.log(res.body.length)
           expect(res.body).to.be.an('array')
           expect(res.body.length).to.equal(54)
         });
       });
     });
   });
+
+  describe('Error handling', () => {
+    it.only('returns a 404 with error message', () => {
+      return request
+      .get('/api/users/sandwiches')
+      .expect(404)
+      .then(res => {
+        expect(res.text).to.equal('Invalid username')
+      })
+    })
+  })
 });
