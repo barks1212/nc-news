@@ -39,7 +39,7 @@ describe('api/topics', function () {
 
   describe('POST methods', () => {
     describe('/:topic/articles', () => {
-      it.only('posts an article to specific topic 201 status', () => {
+      it('posts an article to specific topic 201 status', () => {
         return request
           .post('/api/topics/football/articles')
           .send({
