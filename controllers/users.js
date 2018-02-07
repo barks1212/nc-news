@@ -46,16 +46,6 @@ function getUsers(req, res) {
     })
 }
 
-// function getSingleUser(req, res) {
-//   Users.findOne({
-//     username: req.params.username
-//   })
-//     .then((user) => {
-//       res.status(200).json(user);
-//     })
-//     .catch(console.error);
-// }
-
 function getAllArticlesByUser(req, res) {
   Articles.find({
     created_by: req.params.username
@@ -76,7 +66,6 @@ function getAllCommentsByUser(req, res) {
 }
 
 module.exports = {
-  // getSingleUser,
   getUsers,
   getAllArticlesByUser,
   getAllCommentsByUser
