@@ -22,7 +22,7 @@ describe('api/articles', function () {
           .expect(200)
           .then((res) => {
             expect(res.body.articles).to.be.an('array');
-            expect(res.body.articles.length).to.equal(36);
+            expect(res.body.articles.length).to.equal(35);
           })
       });
     })
