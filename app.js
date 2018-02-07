@@ -30,9 +30,15 @@ app.get('/', (req, res) => {
 
 app.use('/api', router)
 
-app.use((err, req, res, next) => {
-  res.status(500).json(err);
-  next();
-})
+app.use((err,req,res,next) => {
+  if (err.status === 404) {
+    res.status(404).send(err.message);
+  }
+});
+
+// app.use((err, req, res, next) => {
+//   res.status(500).json(err);
+//   next();
+// })
 
 module.exports = app;
