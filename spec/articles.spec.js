@@ -26,27 +26,20 @@ describe('api/articles', function () {
           .get('/api/articles')
           .expect(200)
           .then((res) => {
-            console.log(res.body.articles.length);
+            expect(res.body.articles).to.be.an('array');
+            expect(res.body.articles.length).to.equal(36);
           })
       });
     })
 
   })
-  // it('Responds with an array of specific article and 200 status', () => {
-  //   return request
-  //     .get('/api/articles/5a79cd9d39d1b52e5f2ac398')
-  //     .expect(200)
-  //     .then(res => {
-  //       expect(res.body).to.be.an('Array')
-  //       expect(res.body[0].belongs_to).to.equal('football')
-  //     })
-  // })
-  xit('get comments of a specific article 200 status', () => {
+ 
+  it('get comments of a specific article 200 status', () => {
     return request
       .get('/api/articles/5a79cd9d39d1b52e5f2ac398/comments')
       .expect(200)
       .then(res => {
-        expect(res.body).to.be.an('Array')
+        expect(res.body).to.be.an('array')
         expect(res.body[0].belongs_to._id).to.equal("5a79cd9d39d1b52e5f2ac398")
       })
   })
