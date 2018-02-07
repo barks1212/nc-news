@@ -89,6 +89,59 @@ describe('api/articles', function () {
             expect(res.body).to.equal('Article deleted');
           });
       });
-    })
-  })
+    });
+  });
+
+  describe('Error handling', () => {
+    describe('/:articleid, GET', () => {
+      it('returns a 404 with an error message on an invalid GET request', () => {
+        return request
+        .get('/api/articles/123')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('invalid id!')
+        });
+      });
+    });
+    describe('/:articleid/comments, GET', () => {
+      it('returns a 404 with an error message on an invalid GET request', () => {
+        return request
+        .get('/api/articles/123/comments')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('invalid id!')
+        });
+      });
+    });
+    describe('/:articleid/comments, POST', () => {
+      it('returns a 404 with an error message on an invalid POST request', () => {
+        return request
+        .post('/api/articles/123/comments')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('invalid id!')
+        });
+      });
+    });
+    describe('/:articleid/, PUT', () => {
+      it('returns a 404 with an error message on an invalid PUT request', () => {
+        return request
+        .put('/api/articles/123?vote=up')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('invalid id or query!')
+        });
+      });
+    });
+    describe('/:articleid/, DELETE', () => {
+      it.only('returns a 404 with an error message on an invalid DELETE request', () => {
+        return request
+        .delete('/api/articles/123')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('invalid id!')
+        });
+      });
+    });
+  });
 });
