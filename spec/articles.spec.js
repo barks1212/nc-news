@@ -134,7 +134,7 @@ describe('api/articles', function () {
       });
     });
     describe('/:articleid/, DELETE', () => {
-      it.only('returns a 404 with an error message on an invalid DELETE request', () => {
+      it('returns a 404 with an error message on an invalid DELETE request', () => {
         return request
         .delete('/api/articles/123')
         .expect(404)

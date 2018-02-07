@@ -51,7 +51,30 @@ describe('api/topics', function () {
             expect(res.body.created_by).to.equal('northcoder')
             expect(res.body.title).to.equal("This is football")
           });
-      })
-    })
-  })
-})
+      });
+    });
+  });
+
+  describe('Error handling', () => {
+    describe('/:topic/articles GET', () => {
+      it('returns a 404 with error message for invalid GET request', () => {
+        return request
+          .get('/api/topics/candy/articles')
+          .expect(404)
+          .then(res => {
+            expect(res.text).to.equal('invalid topic name!')
+          });
+      });
+    });
+    describe('/:topic/articles POST', () => {
+      it('returns a 404 with error message for invalid POST request', () => {
+        return request
+          .post('/api/topics/candy/articles')
+          .expect(404)
+          .then(res => {
+            expect(res.text).to.equal('invalid topic!')
+          });
+      });
+    });
+  });
+});
