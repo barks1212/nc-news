@@ -7,23 +7,23 @@ const {
   Comments
 } = require('../models/models')
 
-function updateTotalVotes (user, votes) {
+function updateTotalVotes(user, votes) {
   return Object.assign({}, user, {
     totalVotes: user.totalVotes ? user.totalVotes + votes : votes
   })
 }
 
-function reduceToVoteCount (collection) {
+function reduceToVoteCount(collection) {
   return collection.reduce((total, item) => total + item.votes, 0);
 }
 
-function getUsers(req, res) {
+function getUsers(req, res, next) {
   let users;
   const query = !req.params.username ? {} : { username: req.params.username };
   Users.find(query).lean()
     .then(users => {
       const articlePromises = users.map(user => {
-        return Articles.find({created_by: user.username})
+        return Articles.find({ created_by: user.username })
       })
       return Promise.all([users, ...articlePromises]);
     })
@@ -33,36 +33,61 @@ function getUsers(req, res) {
         return updateTotalVotes(user, articleVotesCounts[i])
       });
       const commentsPromises = users.map(user => {
-        return Comments.find({created_by: user.username})
+        return Comments.find({ created_by: user.username })
       })
       return Promise.all([users, ...commentsPromises]);
     })
     .then(([users, ...commentsByUser]) => {
-      const commentVotesCounts = commentsByUser.map(reduceToVoteCount);  
+      const commentVotesCounts = commentsByUser.map(reduceToVoteCount);
       users = users.map((user, i) => {
         return updateTotalVotes(user, commentVotesCounts[i])
       });
-      res.json({users})
+      users.length ?
+      res.status(200).json({ users })
+      :
+      res.status(404).send('Invalid username')
+    })
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'bad path!'
+      })
     })
 }
 
-function getAllArticlesByUser(req, res) {
+function getAllArticlesByUser(req, res, next) {
   Articles.find({
     created_by: req.params.username
   })
     .then((userArticles) => {
-      res.status(200).json(userArticles);
+      userArticles.length ? 
+      res.status(200).json(userArticles)
+      :
+      res.status(404).send('Invalid username')
       mongoose.disconnect();
     })
-    .catch(console.error);
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'bad path!'
+      })
+    })
 }
 
-function getAllCommentsByUser(req, res) {
+function getAllCommentsByUser(req, res, next) {
   Comments.find({ created_by: req.params.username })
     .then((userComments) => {
-      res.status(200).json(userComments);
+      userComments.length ? 
+      res.status(200).json(userComments)
+      :
+      res.status(400).send('Invalid Username') 
     })
-    .catch(console.error);
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'bad path!'
+      })
+    });
 }
 
 module.exports = {
