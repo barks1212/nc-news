@@ -60,8 +60,8 @@ describe('api/articles', function () {
   });
 
   describe('POST methods', () => {
-    describe('/:articleid?vote', () => {
-      it.only('add comment to a specific article 201 status', () => {
+    describe('/:articleid/comments', () => {
+      it('add comment to a specific article 201 status', () => {
         return request
           .post('/api/articles/5a3d30a7e84d40061379c5b5/comments')
           .send({
@@ -79,7 +79,16 @@ describe('api/articles', function () {
     });
   });
 
-  describe('DELETE methods', ()=> {
-    describe('')
+  describe('DELETE methods', () => {
+    describe('/:articleid', () => {
+      it('delete the article and 202 status', () => {
+        return request
+          .delete('/api/articles/5a79cd9d39d1b52e5f2ac398')        
+          .expect(202)
+          .then(res => {
+            expect(res.body).to.equal('Article deleted');
+          });
+      });
+    })
   })
 });

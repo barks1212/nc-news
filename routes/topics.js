@@ -7,6 +7,6 @@ router.route('/')
 
 router.route('/:topic/articles')
   .get(getArticlesForTopic)
-  .post((req, res)=>{console.log(req.body)});
+  .post(addArticleForTopic);
 
 module.exports = router;
