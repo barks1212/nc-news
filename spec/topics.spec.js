@@ -25,7 +25,7 @@ describe('api/topics', function () {
       });
     });
     describe('/:topic/articles', () => {
-      it.only('get article by slug and 200 status', () => {
+      it('get article by slug and 200 status', () => {
         return request
           .get('/api/topics/football/articles')
           .expect(200)
@@ -36,4 +36,22 @@ describe('api/topics', function () {
       });
     });
   });
+
+  describe('POST methods', () => {
+    describe('/:topic/articles', () => {
+      it.only('posts an article to specific topic 201 status', () => {
+        return request
+          .post('/api/topics/football/articles')
+          .send({
+            title: "This is football",
+            body: "Football football football"
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.created_by).to.equal('northcoder')
+            expect(res.body.title).to.equal("This is football")
+          });
+      })
+    })
+  })
 })

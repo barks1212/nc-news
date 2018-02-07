@@ -35,8 +35,8 @@ function addArticleForTopic(req, res) {
   const newArticle = new Articles({
       title: req.body.title,
       body: req.body.body,
-      created_by: req.body.by,
-      belongs_to: req.params.topic_id
+      created_by: req.body.created_by,
+      belongs_to: req.params.topic
   })
   newArticle.save()
       .then((newArticle) => {
