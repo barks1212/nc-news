@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getSingleUser,
   getUsers,
   getAllArticlesByUser,
   getAllCommentsByUser
@@ -17,6 +16,6 @@ router.route('/:username/articles')
     .get(getAllCommentsByUser);
 
 router.route('/:username')
-  .get(getSingleUser);
+  .get(getUsers);
 
 module.exports = router;

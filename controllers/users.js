@@ -7,25 +7,43 @@ const {
   Comments
 } = require('../models/models')
 
-
-function getUsers(req, res) {
-  Users.find()
-    .then((allUsers) => {
-      res.status(200).json({
-        users: allUsers
-      });
-    })
-    .catch(console.error);
+function updateTotalVotes (user, votes) {
+  return Object.assign({}, user, {
+    totalVotes: user.totalVotes ? user.totalVotes + votes : votes
+  })
 }
 
-function getSingleUser(req, res) {
-  Users.findOne({
-    username: req.params.username
-  })
-    .then((user) => {
-      res.status(200).json(user);
+function reduceToVoteCount (collection) {
+  return collection.reduce((total, item) => total + item.votes, 0);
+}
+
+function getUsers(req, res) {
+  let users;
+  const query = !req.params.username ? {} : { username: req.params.username };
+  Users.find(query).lean()
+    .then(users => {
+      const articlePromises = users.map(user => {
+        return Articles.find({created_by: user.username})
+      })
+      return Promise.all([users, ...articlePromises]);
     })
-    .catch(console.error);
+    .then(([users, ...articlesByUser]) => {
+      const articleVotesCounts = articlesByUser.map(reduceToVoteCount);
+      users = users.map((user, i) => {
+        return updateTotalVotes(user, articleVotesCounts[i])
+      });
+      const commentsPromises = users.map(user => {
+        return Comments.find({created_by: user.username})
+      })
+      return Promise.all([users, ...commentsPromises]);
+    })
+    .then(([users, ...commentsByUser]) => {
+      const commentVotesCounts = commentsByUser.map(reduceToVoteCount);  
+      users = users.map((user, i) => {
+        return updateTotalVotes(user, commentVotesCounts[i])
+      });
+      res.json({users})
+    })
 }
 
 function getAllArticlesByUser(req, res) {
@@ -48,7 +66,6 @@ function getAllCommentsByUser(req, res) {
 }
 
 module.exports = {
-  getSingleUser,
   getUsers,
   getAllArticlesByUser,
   getAllCommentsByUser
