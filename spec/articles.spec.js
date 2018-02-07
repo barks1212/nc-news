@@ -53,7 +53,7 @@ describe('api/articles', function () {
           .send({ votes: 5 })
           .expect(202)
           .then(res => {
-            expect(res.body.votes).to.not.equal(votes);
+            expect(res.body.articles[0].votes).to.not.equal(votes);
           })
       });
     });
