@@ -30,9 +30,16 @@ app.get('/', (req, res) => {
 
 app.use('/api', router)
 
+app.use((err,req,res,next) => {
+  if (err.status === 404) {
+   return res.status(404).send(err.message);
+  }
+  next()
+});
+
 app.use((err, req, res, next) => {
+  (error.name === 'CastError') ? res.status(400).send('cast error - check url') :
   res.status(500).json(err);
-  next();
 })
 
 module.exports = app;

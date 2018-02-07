@@ -69,4 +69,37 @@ describe('api/comments', function () {
       });
     });
   });
+
+  describe('Error handling', () => {
+    describe('/:commentid, GET', () => {
+      it('returns a 404 with error message on invalid GET request', () => {
+        return request
+        .get('/api/comments/123456')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('Invalid id!')
+        });
+      });
+    });
+    describe('/:commentid, PUT', () => {
+      it('returns a 404 with error message on invalid PUT request', () => {
+        return request
+        .put('/api/comments/123456?vote=up')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('Invalid id provided or invalid query!')
+        });
+      });
+    });
+    describe('/:commentid, DELETE', () => {
+      it('returns a 404 with error message on invalid DELETE request', () => {
+        return request
+        .delete('/api/comments/123456')
+        .expect(404)
+        .then(res => {
+          expect(res.text).to.equal('invalid id!')
+        });
+      });
+    });
+  });
 });

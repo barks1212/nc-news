@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 const { Articles, Comments } = require('../models/models');
 
-function getArticles(req, res) {
+function getArticles(req, res, next) {
 
   const query = !req.params.article_id ? {} : { _id: req.params.article_id };
   Articles.find(query).lean()
@@ -18,12 +18,17 @@ function getArticles(req, res) {
       articles.forEach((article, i) => {
         article.comments = commentsCounts[i];
       });
-      res.status(200).json({articles});
+      res.status(200).json({ articles });
     })
-    .catch(console.error)
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'invalid id!'
+      })
+    })
 }
 
-function getCommentsForArticle(req, res) {
+function getCommentsForArticle(req, res, next) {
   Comments.find({
     belongs_to: req.params.article_id
   }).populate('belongs_to', 'title').lean()
@@ -31,12 +36,17 @@ function getCommentsForArticle(req, res) {
       comments.sort((b, a) => {
         return a.votes - b.votes;
       });
-      res.status(200).json({comments});
+      res.status(200).json({ comments });
     })
-    .catch(console.error)
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'invalid id!'
+      })
+    })
 }
 
-function addCommentsForArticle(req, res) {
+function addCommentsForArticle(req, res, next) {
   const newComment = new Comments({
     body: req.body.text,
     belongs_to: req.params.article_id
@@ -45,10 +55,15 @@ function addCommentsForArticle(req, res) {
     .then(newComment => {
       res.status(201).json(newComment);
     })
-    .catch(console.error)
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'invalid id!'
+      })
+    })
 }
 
-function updateArticleVote(req, res) {
+function updateArticleVote(req, res, next) {
   Articles.findOne({
     _id: req.params.article_id
   })
@@ -68,15 +83,25 @@ function updateArticleVote(req, res) {
     .then(updatedArticle => {
       res.status(202).json(updatedArticle[0]);
     })
-    .catch(console.error);
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'invalid id or query!'
+      })
+    })
 }
 
-function deleteArticle(req, res) {
+function deleteArticle(req, res, next) {
   Articles.findOneAndRemove({ _id: req.params.article_id })
     .then(() => {
       res.status(202).json('Article deleted');
     })
-    .catch(console.error);
+    .catch(err => {
+      return next({
+        status: 404,
+        message: 'invalid id!'
+      })
+    })
 }
 module.exports = {
   getArticles,

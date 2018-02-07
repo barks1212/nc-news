@@ -48,16 +48,26 @@ describe('api/topics', function () {
       });
     });
     describe('/:username/comments', () => {
-      it.only('returns a specified users comments', () => {
+      it('returns a specified users comments', () => {
         return request
         .get('/api/users/tickle122/comments')
         .expect(200)
         .then(res => {
-          console.log(res.body.length)
           expect(res.body).to.be.an('array')
           expect(res.body.length).to.equal(54)
         });
       });
     });
   });
+
+  describe('Error handling', () => {
+    it('returns a 404 with error message', () => {
+      return request
+      .get('/api/users/sandwiches')
+      .expect(404)
+      .then(res => {
+        expect(res.text).to.equal('Invalid username')
+      })
+    })
+  })
 });
