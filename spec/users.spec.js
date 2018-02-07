@@ -61,7 +61,7 @@ describe('api/topics', function () {
   });
 
   describe('Error handling', () => {
-    it.only('returns a 404 with error message', () => {
+    it('returns a 404 with error message', () => {
       return request
       .get('/api/users/sandwiches')
       .expect(404)
