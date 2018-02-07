@@ -94,7 +94,7 @@ describe('api/articles', function () {
 
   describe('Error handling', () => {
     describe('/:articleid, GET', () => {
-      it('returns a 404 with an error message on an invalid GET request', () => {
+      it.only('returns a 404 with an error message on an invalid GET request', () => {
         return request
         .get('/api/articles/123')
         .expect(404)
