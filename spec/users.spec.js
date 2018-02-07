@@ -48,7 +48,7 @@ describe('api/topics', function () {
       });
     });
     describe('/:username/comments', () => {
-      it.only('returns a specified users comments', () => {
+      it('returns a specified users comments', () => {
         return request
         .get('/api/users/tickle122/comments')
         .expect(200)
