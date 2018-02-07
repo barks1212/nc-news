@@ -6,7 +6,8 @@ const saveTestData = require('../seed/test.seed');
 
 
 
-describe('api/articles', () => {
+describe('api/articles', function () {
+  this.timeout(10000);
   // before((done) => {
   //       return saveTestData()
   //       .then(() => {
@@ -18,14 +19,14 @@ describe('api/articles', () => {
     done()
   })
   describe('GET methods', () => {
+    
     describe('/', () => {
-      it('responds with an array of all articles and 200 status', (done) => {
-        request
+      it('responds with an array of all articles and 200 status', () => {
+        return request
           .get('/api/articles')
           .expect(200)
-          .end((err, res) => {
+          .then((res) => {
             console.log(res.body.articles.length);
-            done()
           })
       });
     })
