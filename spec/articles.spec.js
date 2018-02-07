@@ -40,8 +40,7 @@ describe('api/articles', function () {
   })
 
   describe('PUT methods', () => {
-
-    describe('./:articleid?vote', () => {
+    describe('/:articleid?vote', () => {
       it(`update article's vote  202 status`, () => {
         let votes;
         request
@@ -59,4 +58,28 @@ describe('api/articles', function () {
       });
     });
   });
+
+  describe('POST methods', () => {
+    describe('/:articleid?vote', () => {
+      it.only('add comment to a specific article 201 status', () => {
+        return request
+          .post('/api/articles/5a3d30a7e84d40061379c5b5/comments')
+          .send({
+            text: "Redu kadezzo siigoter re cokbaru giffe palofja hifji dibwu nopewnuw gukizis wanun ub sepdid guv caju bumiwede. Poledmep we moproke rehi le jagegwo fekot ubi sedvuvuha oztobkoc vehbizpal lusuw kikufze jovku baccad. Ju sile cerad bugamak ji vawsozinu si coel lideucu figjuv tu pubasbip lekaseha ge.",
+            belongs_to: {
+              _id: "5a3d30a7e84d40061379c5b5"
+            }
+          })
+          .expect(201)
+          .then(res => {
+            expect(res.body.created_by).to.equal('northcoder')
+            expect(res.body.belongs_to).to.equal("5a3d30a7e84d40061379c5b5")
+          });
+      });
+    });
+  });
+
+  describe('DELETE methods', ()=> {
+    describe('')
+  })
 });

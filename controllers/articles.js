@@ -38,7 +38,7 @@ function getCommentsForArticle(req, res) {
 
 function addCommentsForArticle(req, res) {
   const newComment = new Comments({
-    body: req.body.comment,
+    body: req.body.text,
     belongs_to: req.params.article_id
   })
   return newComment.save()
