@@ -27,11 +27,11 @@ function getCommentsForArticle(req, res) {
   Comments.find({
     belongs_to: req.params.article_id
   }).populate('belongs_to', 'title').lean()
-    .then(allComments => {
-      allComments.sort((b, a) => {
+    .then(comments => {
+      comments.sort((b, a) => {
         return a.votes - b.votes;
       });
-      res.status(200).json(allComments);
+      res.status(200).json({comments});
     })
     .catch(console.error)
 }
