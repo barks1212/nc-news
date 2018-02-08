@@ -6,7 +6,6 @@ function getAllTopics(req, res, next) {
   Topics.find()
     .then((topics) => {
       res.status(200).send({ topics });
-      mongoose.disconnect();
     })
     .catch(err => {
       return next({
