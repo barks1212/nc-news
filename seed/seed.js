@@ -9,11 +9,11 @@ var mongoose = require('mongoose');
 var log4js = require('log4js');
 var logger = log4js.getLogger();
 var moment = require('moment');
-var DBs = require('../config.secret').DB;
+var DB_URI = require('../config').DB_URI;
 
-mongoose.connect(DBs[process.env.NODE_ENV], function (err) {
+mongoose.connect(DB_URI, function (err) {
   if (!err) {
-    logger.info(`connected to database ${DBs.production}`);
+    logger.info(`connected to database ${DB_URI}`);
     mongoose.connection.db.dropDatabase();
     async.waterfall([
       addUsers,

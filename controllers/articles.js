@@ -64,24 +64,16 @@ function addCommentsForArticle(req, res, next) {
 }
 
 function updateArticleVote(req, res, next) {
-  Articles.findOne({
-    _id: req.params.article_id
-  })
+  const { article_id } = req.params;
+  let { vote } = req.body;
+  let increment;
+  if (vote === 'up') increment = 1;
+  if (vote === 'down') increment = -1;
+
+  Articles.findByIdAndUpdate({ _id: article_id }, { $set: { votes: increment } })
     .then(article => {
-      const { vote } = req.query;
-      let currentVotes = article.votes;
-      if (vote === 'up')++currentVotes
-      else if (vote === 'down')--currentVotes
-      return Promise.all([Articles.findOneAndUpdate({
-        _id: article._id
-      }, {
-          $set: {
-            votes: currentVotes
-          }
-        })])
-    })
-    .then(updatedArticle => {
-      res.status(202).json(updatedArticle[0]);
+      res.status(201)
+      res.send(article)
     })
     .catch(err => {
       return next({

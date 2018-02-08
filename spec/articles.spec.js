@@ -8,7 +8,14 @@ const saveTestData = require('../seed/test.seed');
 
 describe('api/articles', function () {
   this.timeout(10000);
-
+  let data;
+  before(() => {
+    return mongoose.connection.dropDatabase()
+      .then(saveTestData)
+      .then((savedData) => {
+        data = savedData
+      })
+  })
   after(done => {
     mongoose.connection.close()
     done()
@@ -22,18 +29,18 @@ describe('api/articles', function () {
           .expect(200)
           .then((res) => {
             expect(res.body.articles).to.be.an('array');
-            expect(res.body.articles.length).to.equal(35);
+            expect(res.body.articles.length).to.equal(2);
           })
       });
     })
     describe('/:articleid/comments', () => {
       it('get comments of a specific article 200 status', () => {
         return request
-          .get('/api/articles/5a79cd9d39d1b52e5f2ac398/comments')
+          .get(`/api/articles/${data.articles[0]._id}/comments`)
           .expect(200)
           .then(res => {
             expect(res.body.comments).to.be.an('array')
-            expect(res.body.comments[0].belongs_to._id).to.equal("5a79cd9d39d1b52e5f2ac398")
+            expect(res.body.comments[0].belongs_to).to.equal("5a7c4c09e2b3620db62329a1")
           })
       });
     });
@@ -41,107 +48,106 @@ describe('api/articles', function () {
 
   describe('PUT methods', () => {
     describe('/:articleid?vote', () => {
-      it(`update article's vote  202 status`, () => {
-        let votes;
-        request
-          .get('/api/articles/5a79cd9d39d1b52e5f2ac398')
-          .then(res => {
-            votes = res.votes;
-          })
+      it(`update article's vote  201 status`, () => {
         return request
-          .put('/api/articles/5a79cd9d39d1b52e5f2ac398?vote=up')
-          .send({ votes: 5 })
-          .expect(202)
-          .then(res => {
-            expect(res.body.articles[0].votes).to.not.equal(votes);
-          })
-      });
-    });
-  });
-
-  describe('POST methods', () => {
-    describe('/:articleid/comments', () => {
-      it('add comment to a specific article 201 status', () => {
-        return request
-          .post('/api/articles/5a3d30a7e84d40061379c5b5/comments')
-          .send({
-            text: "Redu kadezzo siigoter re cokbaru giffe palofja hifji dibwu nopewnuw gukizis wanun ub sepdid guv caju bumiwede. Poledmep we moproke rehi le jagegwo fekot ubi sedvuvuha oztobkoc vehbizpal lusuw kikufze jovku baccad. Ju sile cerad bugamak ji vawsozinu si coel lideucu figjuv tu pubasbip lekaseha ge.",
-            belongs_to: {
-              _id: "5a3d30a7e84d40061379c5b5"
-            }
-          })
+          .put(`/api/articles/${data.articles[0]._id}`)
+          .send({ vote: 'up' })
           .expect(201)
           .then(res => {
-            expect(res.body.created_by).to.equal('northcoder')
-            expect(res.body.belongs_to).to.equal("5a3d30a7e84d40061379c5b5")
-          });
-      });
+            expect(res.body.votes).to.equal(0)
+            return request
+              .get(`/api/articles/${data.articles[0]._id}`)
+              .then(res => {
+                expect(res.body.articles[0].votes).to.equal(1)
+              })
+          })
+      })
     });
   });
 
-  describe('DELETE methods', () => {
-    describe('/:articleid', () => {
-      it('delete the article and 202 status', () => {
-        return request
-          .delete('/api/articles/5a79cd9d39d1b52e5f2ac398')        
-          .expect(202)
-          .then(res => {
-            expect(res.body).to.equal('Article deleted');
-          });
+    describe('POST methods', () => {
+      describe('/:articleid/comments', () => {
+        it('add comment to a specific article 201 status', () => {
+          return request
+            .post(`/api/articles/${data.articles[0]._id}/comments`)
+            .send({
+              text: "Redu kadezzo siigoter re cokbaru giffe palofja hifji dibwu nopewnuw gukizis wanun ub sepdid guv caju bumiwede. Poledmep we moproke rehi le jagegwo fekot ubi sedvuvuha oztobkoc vehbizpal lusuw kikufze jovku baccad. Ju sile cerad bugamak ji vawsozinu si coel lideucu figjuv tu pubasbip lekaseha ge.",
+              belongs_to: {
+                _id: `${data.articles[0]._id}`
+              }
+            })
+            .expect(201)
+            .then(res => {
+              expect(res.body.created_by).to.equal('northcoder')
+              expect(res.body.belongs_to).to.equal(`${data.articles[0]._id}`)
+            });
+        });
       });
     });
-  });
 
-  describe('Error handling', () => {
-    describe('/:articleid, GET', () => {
-      it.only('returns a 404 with an error message on an invalid GET request', () => {
-        return request
-        .get('/api/articles/123')
-        .expect(404)
-        .then(res => {
-          expect(res.text).to.equal('invalid id!')
+    describe('DELETE methods', () => {
+      describe('/:articleid', () => {
+        it('delete the article and 202 status', () => {
+          return request
+            .delete(`/api/articles/${data.articles[0]._id}`)
+            .expect(202)
+            .then(res => {
+              expect(res.body).to.equal('Article deleted');
+            });
         });
       });
     });
-    describe('/:articleid/comments, GET', () => {
-      it('returns a 404 with an error message on an invalid GET request', () => {
-        return request
-        .get('/api/articles/123/comments')
-        .expect(404)
-        .then(res => {
-          expect(res.text).to.equal('invalid id!')
+
+    describe('Error handling', () => {
+      describe('/:articleid, GET', () => {
+        it('returns a 404 with an error message on an invalid GET request', () => {
+          return request
+            .get('/api/articles/123')
+            .expect(404)
+            .then(res => {
+              expect(res.text).to.equal('invalid id!')
+            });
         });
       });
-    });
-    describe('/:articleid/comments, POST', () => {
-      it('returns a 404 with an error message on an invalid POST request', () => {
-        return request
-        .post('/api/articles/123/comments')
-        .expect(404)
-        .then(res => {
-          expect(res.text).to.equal('invalid id!')
+      describe('/:articleid/comments, GET', () => {
+        it('returns a 404 with an error message on an invalid GET request', () => {
+          return request
+            .get('/api/articles/123/comments')
+            .expect(404)
+            .then(res => {
+              expect(res.text).to.equal('invalid id!')
+            });
         });
       });
-    });
-    describe('/:articleid/, PUT', () => {
-      it('returns a 404 with an error message on an invalid PUT request', () => {
-        return request
-        .put('/api/articles/123?vote=up')
-        .expect(404)
-        .then(res => {
-          expect(res.text).to.equal('invalid id or query!')
+      describe('/:articleid/comments, POST', () => {
+        it('returns a 404 with an error message on an invalid POST request', () => {
+          return request
+            .post('/api/articles/123/comments')
+            .expect(404)
+            .then(res => {
+              expect(res.text).to.equal('invalid id!')
+            });
         });
       });
-    });
-    describe('/:articleid/, DELETE', () => {
-      it('returns a 404 with an error message on an invalid DELETE request', () => {
-        return request
-        .delete('/api/articles/123')
-        .expect(404)
-        .then(res => {
-          expect(res.text).to.equal('invalid id!')
+      describe('/:articleid/, PUT', () => {
+        it('returns a 404 with an error message on an invalid PUT request', () => {
+          return request
+            .put('/api/articles/123?vote=up')
+            .expect(404)
+            .then(res => {
+              expect(res.text).to.equal('invalid id or query!')
+            });
+        });
+      });
+      describe('/:articleid/, DELETE', () => {
+        it('returns a 404 with an error message on an invalid DELETE request', () => {
+          return request
+            .delete('/api/articles/123')
+            .expect(404)
+            .then(res => {
+              expect(res.text).to.equal('invalid id!')
+            });
         });
       });
     });
   });
-});

@@ -6,7 +6,14 @@ const saveTestData = require('../seed/test.seed');
 
 describe('api/topics', function () {
   this.timeout(10000);
-
+  let data;
+  before(() => {
+    return mongoose.connection.dropDatabase()
+      .then(saveTestData)
+      .then((savedData) => {
+        data = savedData
+      })
+  })
   after(done => {
     mongoose.connection.close()
     done()
@@ -27,11 +34,12 @@ describe('api/topics', function () {
     describe('/:topic/articles', () => {
       it('get article by slug and 200 status', () => {
         return request
-          .get('/api/topics/football/articles')
+          .get(`/api/topics/${data.topics[0].slug}/articles`)
           .expect(200)
           .then(res => {
+            console.log(res.body.articles)
             expect(res.body.articles).to.be.an('array')
-            expect(res.body.articles[0]._id).to.equal("5a79cd9d39d1b52e5f2ac385")
+            expect(res.body.articles[0].title).to.equal('Football is fun')
           })
       });
     });
@@ -41,15 +49,15 @@ describe('api/topics', function () {
     describe('/:topic/articles', () => {
       it('posts an article to specific topic 201 status', () => {
         return request
-          .post('/api/topics/football/articles')
+          .post(`/api/topics/${data.topics[0].slug}/articles`)
           .send({
-            title: "This is football",
-            body: "Football football football"
+            title: 'This is football',
+            body: 'Football football football'
           })
           .expect(201)
           .then(res => {
             expect(res.body.created_by).to.equal('northcoder')
-            expect(res.body.title).to.equal("This is football")
+            expect(res.body.title).to.equal('This is football')
           });
       });
     });

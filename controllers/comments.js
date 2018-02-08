@@ -8,33 +8,32 @@ function getAllComments(req, res, next) {
   Comments.find(query).lean()
     .then((comments) => {
       console.log(comments)
-      res.status(200).json({comments});
+      res.status(200).json({ comments });
     })
     .catch(err => {
       return next({
         status: 404,
-        message : 'Invalid id!'
+        message: 'Invalid id!'
       })
     })
 }
 
 function updateCommentVote(req, res, next) {
-  Comments.findOne({ _id: req.params.comment_id })
-    .then((comment) => {
-      const { vote } = req.query;
-      let currentVotes = comment.votes;
+  const { comment_id } = req.params;
+  let { vote } = req.body;
+  let increment;
+  if (vote === 'up') increment = 1;
+  if (vote === 'down') increment = -1;
 
-      if (vote === 'up')++currentVotes
-      else if (vote === 'down')--currentVotes
-      return Promise.all([Comments.findOneAndUpdate({ _id: comment._id }, { $set: { votes: currentVotes } })])
-    })
-    .then((updateComment) => {
-      res.status(202).json(updateComment);
+  Comments.findByIdAndUpdate({ _id: comment_id }, { $inc: { votes: increment } })
+    .then(comment => {
+      res.status(201)
+      res.send(comment)
     })
     .catch(err => {
       return next({
-        status : 404,
-        message : 'Invalid id provided or invalid query!'
+        status: 404,
+        message: 'Invalid id provided or invalid query!'
       })
     })
 }
@@ -47,7 +46,7 @@ function deleteComment(req, res, next) {
     .catch(err => {
       return next({
         status: 404,
-        message : 'invalid id!'
+        message: 'invalid id!'
       })
     })
 }
