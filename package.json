@@ -6,7 +6,8 @@
   "scripts": {
     "test": "NODE_ENV=test mocha spec",
     "start": "node listen.js",
-    "dev": "NODE_ENV=development nodemon listen.js"
+    "dev": "NODE_ENV=development nodemon listen.js",
+    "postinstall": "node seed/seed.js"
   },
   "repository": {
     "type": "git",
