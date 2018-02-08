@@ -4,7 +4,8 @@ const express = require('express');
 const morgan = require('morgan')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const router = require('./routes/api')
+const cors = require('cors');
+const router = require('./routes/api');
 mongoose.Promise = Promise;
 const app = express();
 
@@ -16,11 +17,13 @@ mongoose.connect(DB_URI)
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+app.use(cors());
 app.use(express.static('./public'));
 
 app.get('/', (req, res) => {
   res.send('All good');
 });
+
 
 app.use('/api', router)
 
