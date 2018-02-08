@@ -28,7 +28,7 @@ function getArticles(req, res, next) {
     })
 }
 
-function getCommentsForArticle(req, res, next) {
+function getCommentsForArticle (req, res, next) {
   Comments.find({
     belongs_to: req.params.article_id
   }).populate('belongs_to', 'title').lean()
@@ -46,7 +46,7 @@ function getCommentsForArticle(req, res, next) {
     })
 }
 
-function addCommentsForArticle(req, res, next) {
+function addCommentsForArticle (req, res, next) {
   const newComment = new Comments({
     body: req.body.text,
     belongs_to: req.params.article_id
@@ -63,7 +63,7 @@ function addCommentsForArticle(req, res, next) {
     })
 }
 
-function updateArticleVote(req, res, next) {
+function updateArticleVote (req, res, next) {
   const { article_id } = req.params;
   let { vote } = req.body;
   let increment;
@@ -83,7 +83,7 @@ function updateArticleVote(req, res, next) {
     })
 }
 
-function deleteArticle(req, res, next) {
+function deleteArticle (req, res, next) {
   Articles.findOneAndRemove({ _id: req.params.article_id })
     .then(() => {
       res.status(202).json('Article deleted');
