@@ -64,7 +64,6 @@ function getAllArticlesByUser(req, res, next) {
       res.status(200).json(userArticles)
       :
       res.status(404).send('Invalid username')
-      mongoose.disconnect();
     })
     .catch(err => {
       return next({
