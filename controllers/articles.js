@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 const { Articles, Comments } = require('../models/models');
 
-function iconChooser (topic) {
-  if (topic === 'football') return 'fas fa-volleyball-ball';
-  else if (topic === 'coding') return 'fas fa-code';
-  else if (topic === 'cooking') return 'fas fa-utensils';
-}
-
 function getArticles(req, res, next) {
   const query = !req.params.article_id ? {} : { _id: req.params.article_id };
   Articles.find(query).lean()
@@ -22,7 +16,6 @@ function getArticles(req, res, next) {
     .then(([articles, ...commentsCounts]) => {
       articles.forEach((article, i) => {
         article.comments = commentsCounts[i];
-        article.icon = iconChooser(article.belongs_to)
       });
       res.status(200).json({ articles });
     })
