@@ -7,7 +7,7 @@ const {
   Comments
 } = require('../models/models')
 
-function updateTotalVotes(user, votes) {
+function updateTotalVotes (user, votes) {
   return Object.assign({}, user, {
     totalVotes: user.totalVotes ? user.totalVotes + votes : votes
   })
@@ -17,7 +17,7 @@ function reduceToVoteCount(collection) {
   return collection.reduce((total, item) => total + item.votes, 0);
 }
 
-function getUsers(req, res, next) {
+function getUsers (req, res, next) {
   let users;
   const query = !req.params.username ? {} : { username: req.params.username };
   Users.find(query).lean()
@@ -43,9 +43,9 @@ function getUsers(req, res, next) {
         return updateTotalVotes(user, commentVotesCounts[i])
       });
       users.length ?
-      res.status(200).json({ users })
-      :
-      res.status(404).send('Invalid username')
+        res.status(200).json({ users })
+        :
+        res.status(404).send('Invalid username')
     })
     .catch(err => {
       return next({
@@ -60,10 +60,10 @@ function getAllArticlesByUser(req, res, next) {
     created_by: req.params.username
   })
     .then((userArticles) => {
-      userArticles.length ? 
-      res.status(200).json(userArticles)
-      :
-      res.status(404).send('Invalid username')
+      userArticles.length ?
+        res.status(200).json(userArticles)
+        :
+        res.status(404).send('Invalid username')
     })
     .catch(err => {
       return next({
@@ -74,19 +74,23 @@ function getAllArticlesByUser(req, res, next) {
 }
 
 function getAllCommentsByUser(req, res, next) {
-  Comments.find({ created_by: req.params.username })
+  Comments.find({ created_by: req.params.username }).lean()
     .then((userComments) => {
-      userComments.length ? 
-      res.status(200).json(userComments)
-      :
-      res.status(400).send('Invalid Username') 
-    })
-    .catch(err => {
-      return next({
-        status: 404,
-        message: 'bad path!'
+      const commentArticlePromises = userComments.map((comment) => {
+        return Articles.findOne({ _id: comment.belongs_to })
       })
-    });
+      return Promise.all([userComments, ...commentArticlePromises])
+    })
+    .then(([userComments, ...commentArticles]) => {
+      userComments.forEach((comment, i) => {
+        if (commentArticles[i] !== null) {
+          comment.commentArticle = commentArticles[i].title
+          comment.commentTopic = commentArticles[i].belongs_to
+        }
+      })
+      res.status(200).json(userComments)
+    })
+    .catch(console.error)
 }
 
 module.exports = {
