@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 const { Topics, Articles, Comments } = require('../models/models');
 
-function iconChooser (topic) {
-  if (topic === 'football') return 'fas fa-volleyball-ball';
-  else if (topic === 'coding') return 'fas fa-code';
-  else if (topic === 'cooking') return 'fas fa-utensils';
-}
-
 function getAllTopics(req, res, next) {
   Topics.find()
     .then((topics) => {
@@ -34,7 +28,6 @@ function getArticlesForTopic(req, res, next) {
     .then((comments) => {
       articles.forEach(function (element, i) {
         element.comments = comments[i];
-        element.icon = iconChooser(element.belongs_to)
       });
       articles.length ?
         res.status(200).json({ articles })
