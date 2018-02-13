@@ -7,7 +7,7 @@ const {
   Comments
 } = require('../models/models')
 
-function updateTotalVotes (user, votes) {
+function updateTotalVotes(user, votes) {
   return Object.assign({}, user, {
     totalVotes: user.totalVotes ? user.totalVotes + votes : votes
   })
@@ -17,7 +17,7 @@ function reduceToVoteCount(collection) {
   return collection.reduce((total, item) => total + item.votes, 0);
 }
 
-function getUsers (req, res, next) {
+function getUsers(req, res, next) {
   let users;
   const query = !req.params.username ? {} : { username: req.params.username };
   Users.find(query).lean()
@@ -58,12 +58,20 @@ function getUsers (req, res, next) {
 function getAllArticlesByUser(req, res, next) {
   Articles.find({
     created_by: req.params.username
-  })
+  }).lean()
     .then((userArticles) => {
-      userArticles.length ?
-        res.status(200).json(userArticles)
-        :
-        res.status(404).send('Invalid username')
+      const commentsCountPromises = userArticles.map((article) => {
+        return Comments.count({
+          belongs_to: article._id
+        })
+      })
+      return Promise.all([userArticles, ...commentsCountPromises])
+    })
+    .then(([articles, ...commentCounts]) => {
+      articles.forEach((article, i) => {
+        article.comments = commentCounts[i]
+      })
+      res.status(200).json(articles)
     })
     .catch(err => {
       return next({
