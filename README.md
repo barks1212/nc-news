@@ -7,37 +7,62 @@ Deployed [here](https://serene-ocean-62601.herokuapp.com/)
 
 ### Check that node is installed
 
-node -v
+```node -v```
 
 Install [here](https://nodejs.org/en/download/package-manager/)
 
 ### Check npm is installed
 
-npm -v
+```npm -v```
 
 Install [here](https://www.npmjs.com/get-npm)
 
 ### Check git is installed
 
-git --version
+```git --version```
 
 Install [here](https://git-scm.com/)
 
 Install Mongo [here](https://docs.mongodb.com/manual/installation/)
 
-# To seed:
-node seed/seed.js - seeds main database
-
-node seed/test.seed.js - seeds test database
-
 # To run:
-Run mongod
+In order to run this project you will need to clone onto your local machine and install all dependencies.
 
-npm i
+Navigate to your favoured directory and clone the repository using this link: 
 
-npm run dev - starts dev server
+```https://github.com/barks1212/nc-news.git```
 
-npm test - starts test server and runs test (server will d/c once tests have ran)
+Change into the project directory with:
+
+```cd nc-news```
+
+Install all project dependancies using:
+
+```npm install``
+
+Open a seperate terminal window and run:
+
+```mongod```
+
+This will launch the database ready for connections, this needs to be left running in the background.
+
+```npm run dev``` - starts dev server
+
+```npm test``` - starts test server and runs test (server will d/c once tests have ran)
+
+The server will run locally on http://localhost:3000. By default this route contains a guide to the various endpoints available with this API.
+
+# To seed:
+
+The package.json includes a postinstall script which should seed the databases automatically upon installing.
+
+### Note: It is imperative to be running mongod or the seed will fail due to not being able to connect to the DB's
+
+```node seed/seed.js``` - seeds main database
+
+```node seed/test.seed.js``` - seeds test database
+
+
 
 # Description
 Back end portion for a reddit like news site. I've been very conscious of best practises when it comes to the file structure within the project directory, setting up index files when necessary and trying to keep everything seperate. At no point did I want the logical path to become obscure:

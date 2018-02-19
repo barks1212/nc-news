@@ -1,0 +1,62 @@
+body {
+  background-color: hsl(0, 0%, 21%);
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 5vh;
+}
+
+#title{
+  text-decoration: underline;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  flex-direction: row; 
+  color: whitesmoke;
+}
+
+.articles{
+  margin-left: 5%;
+  border-right: 1px dotted white;
+}
+
+#articles {
+  font-size: 5vh;
+  text-decoration: underline;
+}
+
+.comments {
+  margin-left: 2%;
+  border-right: 1px dotted white;
+}
+
+#comments {
+  font-size: 5vh;
+  text-decoration: underline;
+}
+
+.topics {
+  margin-left: 2%;
+  border-right: 1px dotted white;
+}
+
+#topics {
+  font-size: 5vh;
+  text-decoration: underline;
+}
+
+.users {
+  margin-left: 2%;
+  margin-right: 5%;
+}
+
+#users {
+  font-size: 5vh;
+  text-decoration: underline;
+}

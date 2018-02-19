@@ -3,17 +3,29 @@ const { expect } = require('chai');
 const request = require('supertest')(app);
 const mongoose = require('mongoose');
 const saveTestData = require('../seed/test.seed');
+const db = require('../config.secret').DB.test;
 
 describe('api/topics', function () {
   this.timeout(10000);
   let data;
-  before(() => {
-    return mongoose.connection.dropDatabase()
+  before(function () {
+    const p = mongoose.connection.readyState === 0 ? mongoose.connect(db) : Promise.resolve();
+    return p
+      .then(() => {
+        return mongoose.connection.dropDatabase();
+      })
       .then(saveTestData)
-      .then((savedData) => {
+      .then(savedData => {
         data = savedData;
       });
   });
+  // before(() => {
+  //   return mongoose.connection.dropDatabase()
+  //     .then(saveTestData)
+  //     .then((savedData) => {
+  //       data = savedData;
+  //     });
+  // });
   after(done => {
     mongoose.connection.close();
     done();
