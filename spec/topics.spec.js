@@ -3,17 +3,29 @@ const { expect } = require('chai');
 const request = require('supertest')(app);
 const mongoose = require('mongoose');
 const saveTestData = require('../seed/test.seed');
+const db = require('../config.secret').DB.test;
 
 describe('api/topics', function () {
   this.timeout(10000);
   let data;
-  before(() => {
-    return mongoose.connection.dropDatabase()
+  before(function () {
+    const p = mongoose.connection.readyState === 0 ? mongoose.connect(db) : Promise.resolve();
+    return p
+      .then(() => {
+        return mongoose.connection.dropDatabase();
+      })
       .then(saveTestData)
-      .then((savedData) => {
+      .then(savedData => {
         data = savedData;
       });
   });
+  // before(() => {
+  //   return mongoose.connection.dropDatabase()
+  //     .then(saveTestData)
+  //     .then((savedData) => {
+  //       data = savedData;
+  //     });
+  // });
   after(done => {
     mongoose.connection.close();
     done();
@@ -77,7 +89,7 @@ describe('api/topics', function () {
       it('returns a 400 with error message for a POST request where the topic is invalid', () => {
         return request
           .post('/api/topics/candy/articles')
-          .send ({
+          .send({
             title: 'an article',
             body: 'an article body'
           })
@@ -89,7 +101,7 @@ describe('api/topics', function () {
       it('returns a 400 with error message for a POST request where the title is missing or invalid', () => {
         return request
           .post('/api/topics/football/articles')
-          .send ({
+          .send({
             title: '',
             body: 'an article body'
           })
@@ -101,7 +113,7 @@ describe('api/topics', function () {
       it('returns a 400 with error message for a POST request where the body is missing or invalid', () => {
         return request
           .post('/api/topics/football/articles')
-          .send ({
+          .send({
             title: 'an article',
           })
           .expect(400)
