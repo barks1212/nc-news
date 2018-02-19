@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const router = require('./routes/api');
+const path = require('path');
 mongoose.Promise = Promise;
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(cors());
 app.use(express.static('./public'));
 
 app.get('/', (req, res) => {
-  res.send('All good');
+  res.sendFile(path.join(__dirname+'/index.html'));
 });
 
 app.use('/api', router);

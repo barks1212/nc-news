@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>NC News Api</title>
+</head>
+
+<body>
+  <h1>Northcoders News API</h1>
+  <section class="main">
+    <section class="articles">
+      <h2>Articles</h2>
+      <h3>GET requests</h3>
+      <ul>
+        <li>
+          <strong>/api/articles</strong> - Retrieve all articles</li>
+        <li>
+          <strong>/api/articles/:articleid</strong> - Retrieve specific article</li>
+        <li>
+          <strong>/api/articles/:articleid/comments</strong> - Retrieve specific article comments</li>
+      </ul>
+      <h3>POST requests</h3>
+      <ul>
+        <li>
+          <strong>/api/articles/:articleid/comments</strong> - Post comment to article</li>
+      </ul>
+      <h3>PUT requests</h3>
+      <ul>
+        <li>
+          <strong>/api/articles/:articleid?vote=up/down</strong> - increment article vote up or down </li>
+      </ul>
+      <h3>DELETE requests</h3>
+      <ul>
+        <li>
+          <strong>/api/articles/:articleid</strong> - delete article</li>
+      </ul>
+    </section>
+    <br>
+    <section class="comments">
+      <h2>Comments</h2>
+      <h3>GET requests</h3>
+      <ul>
+        <li>
+          <strong>/api/comments</strong> - get all comments</li>
+        <li>
+          <strong>/api/comments/:commentid</strong> - get specific comment</li>
+      </ul>
+      <h3>PUT requests</h3>
+      <ul>
+        <li>
+          <strong>/api/comments/:commentid?vote=up/down</strong> - increment comment vote up or down</li>
+      </ul>
+      <h3>DELETE requests</h3>
+      <ul>
+        <li>
+          <strong>/api/comments/:commentid</strong> - Delete comment</li>
+      </ul>
+    </section>
+    <br>
+    <section class="topics">
+      <h2>Topics</h2>
+      <h3>GET requests</h3>
+      <ul>
+        <li>
+          <strong>/api/topics</strong> - get all topics</li>
+        <li>
+          <strong>/api/topics/:topic/articles</strong> - get all articles for specific topic</li>
+      </ul>
+      <h3>POST requests</h3>
+      <ul>
+        <li>
+          <strong>/api/topics/:topic/articles</strong> - post article to specific topic</li>
+      </ul>
+    </section>
+    <br>
+    <section class="users">
+      <h2>Users</h2>
+      <h3>GET requests</h3>
+      <ul>
+        <li>
+          <strong>/api/users</strong> - get all users</li>
+        <li>
+          <strong>/api/users/:username</strong> - get specific user</li>
+        <li>
+          <strong>/api/users/:username/articles</strong> - get articles by user</li>
+        <li>
+          <strong>/api/users/:username/comments</strong> - get comments by user</li>
+      </ul>
+    </section>
+  </section>
+</body>
+
+</html>

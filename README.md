@@ -1,5 +1,29 @@
 # nc-news
-A reddit-like news site for Northcoders - Back end
+A restful API for a reddit-like news site for Northcoders using Nodejs, Express, MongoDB and Mongoose.
+
+Deployed [here](https://serene-ocean-62601.herokuapp.com/)
+
+# Setup:
+
+### Check that node is installed
+
+node -v
+
+Install [here](https://nodejs.org/en/download/package-manager/)
+
+### Check npm is installed
+
+npm -v
+
+Install [here](https://www.npmjs.com/get-npm)
+
+### Check git is installed
+
+git --version
+
+Install [here](https://git-scm.com/)
+
+Install Mongo [here](https://docs.mongodb.com/manual/installation/)
 
 # To seed:
 node seed/seed.js - seeds main database
