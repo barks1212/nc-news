@@ -12,8 +12,8 @@ router.route('/')
 router.route('/:username/articles')
   .get(getAllArticlesByUser);
 
-  router.route('/:username/comments')
-    .get(getAllCommentsByUser);
+router.route('/:username/comments')
+  .get(getAllCommentsByUser);
 
 router.route('/:username')
   .get(getUsers);

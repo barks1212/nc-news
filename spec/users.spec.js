@@ -11,13 +11,13 @@ describe('api/topics', function () {
     return mongoose.connection.dropDatabase()
       .then(saveTestData)
       .then((savedData) => {
-        data = savedData
-      })
-  })
+        data = savedData;
+      });
+  });
   after(done => {
-    mongoose.connection.close()
-    done()
-  })
+    mongoose.connection.close();
+    done();
+  });
 
   describe('GET methods', () => {
     describe('/', () => {
@@ -26,8 +26,8 @@ describe('api/topics', function () {
           .get('/api/users')
           .expect(200)
           .then(res => {
-            expect(res.body).to.be.an('object')
-            expect(res.body.users[0].username).to.equal('tickle122');
+            expect(res.body).to.be.an('object');
+            expect(res.body.users[0].username).to.equal('northcoder');
           });
       });
     });
@@ -37,8 +37,8 @@ describe('api/topics', function () {
           .get(`/api/users/${data.user.username}`)
           .expect(200)
           .then(res => {
-            expect(res.body).to.be.an('object')
-            expect(res.body.users[0].totalVotes).to.equal(0)
+            expect(res.body).to.be.an('object');
+            expect(res.body.users[0].totalVotes).to.equal(0);
           });
       });
     });
@@ -48,9 +48,9 @@ describe('api/topics', function () {
           .get(`/api/users/${data.user.username}/articles`)
           .expect(200)
           .then(res => {
-            expect(res.body).to.be.an('array')
-            expect(res.body[0].belongs_to).to.equal('cats')
-            expect(res.body.length).to.equal(2)
+            expect(res.body).to.be.an('array');
+            expect(res.body[0].belongs_to).to.equal('cats');
+            expect(res.body.length).to.equal(2);
           });
       });
     });
@@ -60,21 +60,37 @@ describe('api/topics', function () {
           .get(`/api/users/${data.user.username}/comments`)
           .expect(200)
           .then(res => {
-            expect(res.body).to.be.an('array')
-            expect(res.body.length).to.equal(2)
+            expect(res.body).to.be.an('array');
+            expect(res.body.length).to.equal(2);
           });
       });
     });
   });
 
   describe('Error handling', () => {
-    it('returns a 404 with error message', () => {
+    it('returns a 400 with error message for an invalid username', () => {
       return request
         .get('/api/users/sandwiches')
-        .expect(404)
+        .expect(400)
         .then(res => {
-          expect(res.text).to.equal('Invalid username')
-        })
-    })
-  })
+          expect(res.text).to.equal('{"message":"Please enter a valid username"}');
+        });
+    });
+    it('returns a 400 with error message for a user with no comments', () => {
+      return request
+        .get('/api/users/sandwiches/comments')
+        .expect(400)
+        .then(res => {
+          expect(res.text).to.equal('{"message":"No comments for that user"}');
+        });
+    });
+    it('returns a 400 with error message for a user with no articles', () => {
+      return request
+        .get('/api/users/sandwiches/articles')
+        .expect(400)
+        .then(res => {
+          expect(res.text).to.equal('{"message":"No articles for that user"}');
+        });
+    });
+  });
 });

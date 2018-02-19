@@ -11,7 +11,7 @@ function getArticles(req, res, next) {
           belongs_to: article._id
         });
       });
-      return Promise.all([allArticles, ...commentsCountPromises])
+      return Promise.all([allArticles, ...commentsCountPromises]);
     })
     .then(([articles, ...commentsCounts]) => {
       articles.forEach((article, i) => {
@@ -19,15 +19,11 @@ function getArticles(req, res, next) {
       });
       res.status(200).json({ articles });
     })
-    .catch(err => {
-      return next({
-        status: 404,
-        message: 'invalid id!'
-      })
-    })
+    .catch(next);
 }
 
-function getCommentsForArticle (req, res, next) {
+function getCommentsForArticle(req, res, next) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.article_id)) return next({ name: 'InvalidId' });
   Comments.find({
     belongs_to: req.params.article_id
   }).populate('belongs_to', 'title').lean()
@@ -37,63 +33,46 @@ function getCommentsForArticle (req, res, next) {
       });
       res.status(200).json({ comments });
     })
-    .catch(err => {
-      return next({
-        status: 404,
-        message: 'invalid id!'
-      })
-    })
+    .catch(next);
 }
 
-function addCommentsForArticle (req, res, next) {
+function addCommentsForArticle(req, res, next) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.article_id)) return next({ name: 'InvalidId' });
+  if (req.body.text === undefined || req.body.text.length === 0) return next({ name: 'InvalidComment' });
   const newComment = new Comments({
     body: req.body.text,
     belongs_to: req.params.article_id
-  })
+  });
   return newComment.save()
     .then(newComment => {
       res.status(201).json(newComment);
     })
-    .catch(err => {
-      return next({
-        status: 404,
-        message: 'invalid id!'
-      })
-    })
+    .catch(next);
 }
 
-function updateArticleVote (req, res, next) {
+function updateArticleVote(req, res, next) {
+  const { vote } = req.query;
   const { article_id } = req.params;
-  let { vote } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(article_id)) return next({ name: 'InvalidId' });
   let increment;
   if (vote === 'up') increment = 1;
-  if (vote === 'down') increment = -1;
-
-  Articles.findByIdAndUpdate({ _id: article_id }, { $set: { votes: increment } })
-    .then(article => {
-      res.status(201)
-      res.send(article)
+  else if (vote === 'down') increment = -1;
+  else return next({ name: 'InvalidQuery' });
+  Articles.findOneAndUpdate({ _id: article_id }, { $inc: { votes: increment } }, { new: true })
+    .then((updatedArticle) => {
+      res.status(202).json(updatedArticle);
     })
-    .catch(err => {
-      return next({
-        status: 404,
-        message: 'invalid id or query!'
-      })
-    })
+    .catch(next);
 }
 
-function deleteArticle (req, res, next) {
+function deleteArticle(req, res, next) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.article_id)) return next({ name: 'InvalidId' });
   Articles.findOneAndRemove({ _id: req.params.article_id })
     .then(() => {
       res.status(202).json('Article deleted');
-    })
-    .catch(err => {
-      return next({
-        status: 404,
-        message: 'invalid id!'
-      })
-    })
+    });
 }
+
 module.exports = {
   getArticles,
   getCommentsForArticle,

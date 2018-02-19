@@ -11,13 +11,13 @@ describe('api/topics', function () {
     return mongoose.connection.dropDatabase()
       .then(saveTestData)
       .then((savedData) => {
-        data = savedData
-      })
-  })
+        data = savedData;
+      });
+  });
   after(done => {
-    mongoose.connection.close()
-    done()
-  })
+    mongoose.connection.close();
+    done();
+  });
 
   describe('GET methods', () => {
     describe('/', () => {
@@ -26,9 +26,9 @@ describe('api/topics', function () {
           .get('/api/topics')
           .expect(200)
           .then(res => {
-            expect(res.body.topics).to.be.an('array')
-            expect(res.body.topics[0].title).to.equal('Football')
-          })
+            expect(res.body.topics).to.be.an('array');
+            expect(res.body.topics[0].title).to.equal('Football');
+          });
       });
     });
     describe('/:topic/articles', () => {
@@ -37,10 +37,9 @@ describe('api/topics', function () {
           .get(`/api/topics/${data.topics[0].slug}/articles`)
           .expect(200)
           .then(res => {
-            console.log(res.body.articles)
-            expect(res.body.articles).to.be.an('array')
-            expect(res.body.articles[0].title).to.equal('Football is fun')
-          })
+            expect(res.body.articles).to.be.an('array');
+            expect(res.body.articles[0].title).to.equal('Football is fun');
+          });
       });
     });
   });
@@ -56,8 +55,8 @@ describe('api/topics', function () {
           })
           .expect(201)
           .then(res => {
-            expect(res.body.created_by).to.equal('northcoder')
-            expect(res.body.title).to.equal('This is football')
+            expect(res.body.created_by).to.equal('northcoder');
+            expect(res.body.title).to.equal('This is football');
           });
       });
     });
@@ -65,22 +64,49 @@ describe('api/topics', function () {
 
   describe('Error handling', () => {
     describe('/:topic/articles GET', () => {
-      it('returns a 404 with error message for invalid GET request', () => {
+      it('returns a 400 with error message for invalid GET request', () => {
         return request
           .get('/api/topics/candy/articles')
-          .expect(404)
+          .expect(400)
           .then(res => {
-            expect(res.text).to.equal('invalid topic name!')
+            expect(res.text).to.equal('{"message":"Please enter a valid topic"}');
           });
       });
     });
     describe('/:topic/articles POST', () => {
-      it('returns a 404 with error message for invalid POST request', () => {
+      it('returns a 400 with error message for a POST request where the topic is invalid', () => {
         return request
           .post('/api/topics/candy/articles')
-          .expect(404)
+          .send ({
+            title: 'an article',
+            body: 'an article body'
+          })
+          .expect(400)
           .then(res => {
-            expect(res.text).to.equal('invalid topic!')
+            expect(res.text).to.equal('{"message":"Please enter a valid topic"}');
+          });
+      });
+      it('returns a 400 with error message for a POST request where the title is missing or invalid', () => {
+        return request
+          .post('/api/topics/football/articles')
+          .send ({
+            title: '',
+            body: 'an article body'
+          })
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal('{"message":"Please enter a valid title"}');
+          });
+      });
+      it('returns a 400 with error message for a POST request where the body is missing or invalid', () => {
+        return request
+          .post('/api/topics/football/articles')
+          .send ({
+            title: 'an article',
+          })
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal('{"message":"Please enter a valid body"}');
           });
       });
     });

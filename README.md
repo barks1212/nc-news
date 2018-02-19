@@ -7,6 +7,8 @@ node seed/seed.js - seeds main database
 node seed/test.seed.js - seeds test database
 
 # To run:
+Run mongod
+
 npm i
 
 npm run dev - starts dev server

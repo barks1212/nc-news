@@ -4,7 +4,7 @@ const {getAllComments, updateCommentVote, deleteComment}  = require('../controll
 
 
 router.route('/')
-  .get(getAllComments)
+  .get(getAllComments);
 
 router.route('/:comment_id')
   .get(getAllComments)

@@ -9,7 +9,7 @@ const {
 } = require('../controllers/articles');
 
 router.route('/')
-  .get(getArticles)
+  .get(getArticles);
 
 router.route('/:article_id/comments')
   .get(getCommentsForArticle)
