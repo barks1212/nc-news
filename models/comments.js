@@ -13,7 +13,7 @@ var CommentSchema = new Schema({
   },
   created_at: {
     type: Number,
-    default: new Date().getTime()
+    default: () => new Date().getTime()
   },
   votes: {
     type: Number,
