@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const request = require('supertest')(app);
 const mongoose = require('mongoose');
 const saveTestData = require('../seed/test.seed');
-const db = require('../config.secret').DB.test;
+const db = require('../environments').DB.test;
 
 describe('api/topics', function () {
   this.timeout(10000);

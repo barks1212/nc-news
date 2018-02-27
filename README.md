@@ -36,32 +36,27 @@ Change into the project directory with:
 
 ```cd nc-news```
 
-Install all project dependancies using:
-
-```npm install``
-
 Open a seperate terminal window and run:
 
 ```mongod```
 
 This will launch the database ready for connections, this needs to be left running in the background.
 
+Install all project dependancies using:
+
+```npm install``
+
+### Note: The package.json includes a postinstall script which should seed the databases automatically upon installing. It is imperative to be running mongod BEFORE INSTALL or the seed will fail due to not being able to connect to the DB's
+
+```node seed/seed.js``` - manually seeds main database
+
+```node seed/test.seed.js``` - manually seeds test database
+
 ```npm run dev``` - starts dev server
 
 ```npm test``` - starts test server and runs test (server will d/c once tests have ran)
 
 The server will run locally on http://localhost:3000. By default this route contains a guide to the various endpoints available with this API.
-
-# To seed:
-
-The package.json includes a postinstall script which should seed the databases automatically upon installing.
-
-### Note: It is imperative to be running mongod or the seed will fail due to not being able to connect to the DB's
-
-```node seed/seed.js``` - seeds main database
-
-```node seed/test.seed.js``` - seeds test database
-
 
 
 # Description

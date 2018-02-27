@@ -4,5 +4,5 @@ module.exports ={
     development: 3000,
     production: process.env.PORT
   },
-  DB_URI: process.env.DB_URI || require('./config.secret').DB[process.env.NODE_ENV]
+  DB_URI: process.env.DB_URI || require('../environments').DB[process.env.NODE_ENV]
 };
